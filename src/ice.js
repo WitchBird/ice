@@ -222,12 +222,11 @@
 			},
 
 			getTrackedUserIds: function(trackedElements) {
-				var self = this;
 				return Array.prototype.map.call(trackedElements, function(elem) {
-					var value = elem.attributes[self.userIdAttribute];
-					return value ? parseInt(value.nodeValue, 10) : self._hashNameToUserId(elem);
-				}).filter(function(elem, idx, arr) {
-					return arr.indexOf(elem) == idx;
+					var value = elem.attributes[this.userIdAttribute];
+					return value ? parseInt(value.nodeValue, 10) : this._hashNameToUserId(elem);
+				}.bind(this)).filter(function(elem, idx, arr) {
+					return arr.indexOf(elem) === idx;
 				});
 			},
 
@@ -249,10 +248,10 @@
 
 			_hashNameToUserId: function(nodeEl) {
 				var name = ice.dom.attr(nodeEl, this.userNameAttribute);
-				var hash = 0, i, chr;
+				var hash = 0;
 				if (name.length === 0) return hash;
-				for (i = 0; i < name.length; i++) {
-				  chr   = name.charCodeAt(i);
+				for (var i = 0; i < name.length; i++) {
+				  var chr   = name.charCodeAt(i);
 				  hash  = ((hash << 5) - hash) + chr;
 				  hash |= 0; // Convert to 32bit integer
 				}
@@ -265,27 +264,26 @@
 					return;
 				}
 
-				var self = this;
-				self._trackedUsersId = [];
-				self._userStyles = {}; // force a new color
+				this._trackedUsersId = [];
+				this._userStyles = {}; // force a new color
 				trackedElements.forEach(function(el) {
-					var userid = self._retrieveOrGenerateUserId(el);
+					var userid = this._retrieveOrGenerateUserId(el);
 
 					var matchStyleIndex = el.className.match(/\d+/); // retrieve from current class 'cts-1'
 					if (matchStyleIndex) {
-						var previousStyleClass = self.stylePrefix + '-' + matchStyleIndex[0];
+						var previousStyleClass = this.stylePrefix + '-' + matchStyleIndex[0];
 						if (ice.dom.hasClass(el, previousStyleClass)) {
 							ice.dom.removeClass(el, previousStyleClass);
 						}
 					}
 
-					var style = self.getUserStyle(userid);
+					var style = this.getUserStyle(userid);
 					ice.dom.addClass(el, style);
 
-					if (self._trackedUsersId.indexOf(userid) == -1) {
-						self._trackedUsersId.push(userid);
+					if (this._trackedUsersId.indexOf(userid) === -1) {
+						this._trackedUsersId.push(userid);
 					}
-				});
+				}.bind(this));
 			},
 
 			/**
@@ -863,10 +861,7 @@
 			},
 
 			getUserStyle: function (userid) {
-				var style = null;
-				if (this._userStyles[userid]) style = this._userStyles[userid];
-				else style = this.setUserStyle(userid, this.getNewStyleId(userid));
-				return style;
+				return this._userStyles[userid] ? this._userStyles[userid] : this.setUserStyle(userid, this.getNewStyleId(userid))
 			},
 
 			setUserStyle: function (userid, styleIndex) {
