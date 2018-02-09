@@ -249,7 +249,9 @@
 			_hashNameToUserId: function(nodeEl) {
 				var name = ice.dom.attr(nodeEl, this.userNameAttribute);
 				var hash = 0;
-				if (name.length === 0) return hash;
+				if (name.length === 0) {
+					return hash;
+				}
 				for (var i = 0; i < name.length; i++) {
 				  var chr   = name.charCodeAt(i);
 				  hash  = ((hash << 5) - hash) + chr;
