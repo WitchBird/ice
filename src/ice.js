@@ -232,8 +232,7 @@
 			},
 
 			_retrieveOrGenerateStyleIndex: function(nodeEl, userid) {
-				if (this._trackedUsersId.indexOf(userid))
-				{
+				if (this._trackedUsersId.indexOf(userid)) {
 					var matchStyleIndex = nodeEl.className.match(/\d+/); // retrieve from current class 'cts-1'
 					if (matchStyleIndex) {
 						return matchStyleIndex[0];
